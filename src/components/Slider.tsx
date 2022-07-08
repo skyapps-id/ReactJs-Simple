@@ -10,7 +10,6 @@ interface SliderProps {
 const { Sider } = Layout;
 const pathName = window.location.pathname;
 const defaultSelected = routes.findIndex(({ path }) => path == pathName) + 1;
-console.log(defaultSelected);
 
 const Slider: FC<SliderProps> = ({ collapsed }) => {
   return (

@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { Space, Table, Tag, Button, Layout } from 'antd';
+import { Space, Table, Tag, Button } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-const { Content } = Layout;
 
 interface DataType {
   key: string;
