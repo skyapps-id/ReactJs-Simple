@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { Space, Table, Tag, Button, Layout } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import routes from '../routes';
 const { Content } = Layout;
 
 interface DataType {
@@ -97,6 +98,13 @@ const ContentComponent: FC = () => {
     >
       <Button type="primary">Filter</Button>
       <Table columns={columns} dataSource={data} />
+      <Router>
+        <Routes>
+          {routes.map((route, index) => (
+            <Route key={index} path={route.path} element={<route.main />} />
+          ))}
+        </Routes>
+      </Router>
     </Content>
   );
 };
