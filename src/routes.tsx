@@ -1,19 +1,19 @@
-const routes = [
+import Home from './views/Home';
+import Movie from './views/Movie';
+
+interface Routes {
+  path: string;
+  element: React.ReactElement;
+}
+
+const routes: Routes[] = [
   {
     path: '/',
-    exact: true,
-    sidebar: () => <div>home!</div>,
-    main: () => <h2>Home</h2>
+    element: <Home />
   },
   {
-    path: '/bubblegum',
-    sidebar: () => <div>bubblegum!</div>,
-    main: () => <h2>Bubblegum</h2>
-  },
-  {
-    path: '/shoelaces',
-    sidebar: () => <div>shoelaces!</div>,
-    main: () => <h2>Shoelaces</h2>
+    path: '/movie',
+    element: <Movie />
   }
 ];
 

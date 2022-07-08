@@ -1,12 +1,16 @@
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
-// import { Link } from "react-router-dom";
+import routes from '../routes';
 interface SliderProps {
   collapsed: boolean;
 }
 
 const { Sider } = Layout;
+const pathName = window.location.pathname;
+const defaultSelected = routes.findIndex(({ path }) => path == pathName) + 1;
+console.log(defaultSelected);
 
 const Slider: FC<SliderProps> = ({ collapsed }) => {
   return (
@@ -15,17 +19,17 @@ const Slider: FC<SliderProps> = ({ collapsed }) => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={['2']}
+        defaultSelectedKeys={[String(defaultSelected)]}
         items={[
           {
             key: '1',
             icon: <UserOutlined />,
-            label: 'Home'
+            label: <Link to={'/'}>Home</Link>
           },
           {
             key: '2',
             icon: <VideoCameraOutlined />,
-            label: 'Movie'
+            label: <Link to={'/movie'}>Movie</Link>
           }
         ]}
       />

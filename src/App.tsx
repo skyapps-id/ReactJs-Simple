@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// import { BrowserRouter as Router} from 'react-router-dom';
 import { Layout } from 'antd';
 import './App.less';
 import Slider from './components/Slider';
