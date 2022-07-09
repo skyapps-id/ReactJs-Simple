@@ -176,6 +176,7 @@ class Movie extends Component<IProps, IState> {
   };
   handleFilter = (isFilterVisible: boolean) => {
     this.setState({ isFilterVisible });
+    !isFilterVisible && this.getData()
   };
   handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     let searchTitle = this.state.searchTitle;
