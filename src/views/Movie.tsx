@@ -1,95 +1,107 @@
-import React, { FC } from 'react';
-import { Space, Table, Tag, Button } from 'antd';
+import { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchMovies } from '../store/movie/movie-actions';
+import { Space, Table, Button, Row } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
+import { MoviesModel } from '../models/redux-models';
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
+interface DataTypeState {
+  key: number;
+  title: string;
+  view: number;
+  desc: string;
+  genre: string;
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => <a href="/#">{text}</a>
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age'
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address'
-  },
-  {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    )
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <a href="/#">Invite {record.name}</a>
-        <a href="/#">Delete</a>
-      </Space>
-    )
-  }
-];
+interface IRootState {
+  movie: MoviesModel;
+}
 
-const data: DataType[] = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer']
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser']
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher']
-  }
-];
+interface DispatchProps {
+  fetchMovies: () => void;
+}
 
-const Movie: FC = () => {
-  return (
-    <>
-      <Button type="primary">Filter</Button>
-      <Table columns={columns} dataSource={data} />
-    </>
-  );
+const mapStateToProps = (state: IRootState) => state;
+
+const mapDispatchToProps = {
+  fetchMovies
 };
 
-export default Movie;
+type IProps = IRootState & DispatchProps;
+
+type IState = {
+  input: string;
+  data: DataTypeState[];
+};
+class Movie extends Component<IProps, IState> {
+  columns: ColumnsType<DataTypeState> = [
+    {
+      title: 'No',
+      dataIndex: 'key',
+      key: 'no'
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title'
+    },
+    {
+      title: 'View',
+      dataIndex: 'view',
+      key: 'view'
+    },
+    {
+      title: 'Genre',
+      dataIndex: 'genre',
+      key: 'genre'
+    },
+    {
+      title: 'Description',
+      dataIndex: 'desc',
+      key: 'desc'
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: () => (
+        <Space size="middle">
+          <a href="/#">Edit</a>
+        </Space>
+      )
+    }
+  ];
+
+  constructor(props: IProps) {
+    super(props);
+    this.state = { input: '', data: [] };
+  }
+  componentDidMount() {
+    this.getData();
+  }
+  render() {
+    return (
+      <>
+        <Button type="primary" onClick={() => this.getData()}>
+          Filter
+        </Button>
+        <Row>
+          <Table columns={this.columns} dataSource={this.state.data} scroll={{ y: 420 }} />
+        </Row>
+      </>
+    );
+  }
+  getData = async () => {
+    await this.props.fetchMovies();
+    this.setState({
+      data: this.props.movie.all_movie.map((list, index) => ({
+        key: index,
+        title: list.title,
+        view: list.views,
+        genre: list.genre,
+        desc: list.descriptions
+      }))
+    });
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Movie);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Layout } from 'antd';
 import './App.less';
 import Slider from './components/Slider';
@@ -12,12 +12,14 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <Slider collapsed={collapsed} />
-      <Layout className="site-layout">
-        <Header setCollapsed={setCollapsed} collapsed={collapsed} />
-        <Content />
-        <Footer />
-      </Layout>
+      <Router>
+        <Slider collapsed={collapsed} />
+        <Layout className="site-layout">
+          <Header setCollapsed={setCollapsed} collapsed={collapsed} />
+          <Content />
+          <Footer />
+        </Layout>
+      </Router>
     </Layout>
   );
 };
