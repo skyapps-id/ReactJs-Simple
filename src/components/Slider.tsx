@@ -14,7 +14,7 @@ const defaultSelected = routes.findIndex(({ path }) => path == pathName) + 1;
 const Slider: FC<SliderProps> = ({ collapsed }) => {
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
-      <div className="logo" />
+      {/* <div className="logo"></div> */}
       <Menu
         theme="dark"
         mode="inline"

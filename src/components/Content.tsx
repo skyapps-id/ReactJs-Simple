@@ -10,8 +10,7 @@ const ContentComponent: FC = () => {
       className="site-layout-background"
       style={{
         margin: '24px 16px',
-        padding: 24,
-        minHeight: '76vh'
+        padding: 24
       }}
     >
       <Routes>
