@@ -159,13 +159,7 @@ class Movie extends Component<IProps, IState> {
   getData = async () => {
     await this.props.fetchMovies();
     this.setState({
-      data: this.props.movie.all_movie.map((list, index) => ({
-        key: index + 1,
-        title: list.title,
-        view: list.views,
-        genre: list.genre,
-        desc: list.descriptions
-      }))
+      data: this.mapDataPropsToState
     });
   };
   showModal = (index: number) => {
@@ -176,7 +170,12 @@ class Movie extends Component<IProps, IState> {
   };
   handleFilter = (isFilterVisible: boolean) => {
     this.setState({ isFilterVisible });
-    !isFilterVisible && this.getData()
+    if (!isFilterVisible) {
+      this.setState({
+        data: this.mapDataPropsToState
+      });
+      this.setState({ searchTitle: '', searchGenre: '' });
+    }
   };
   handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     let searchTitle = this.state.searchTitle;
@@ -192,21 +191,20 @@ class Movie extends Component<IProps, IState> {
     this.handleSearch(searchTitle, searchGenre);
   };
   handleSearch = (searchTitle: string, searchGenre: string) => {
-    const data = this.props.movie.all_movie
-      .map((list, index) => ({
-        key: index + 1,
-        title: list.title,
-        view: list.views,
-        genre: list.genre,
-        desc: list.descriptions
-      }))
-      .filter(
-        (obj) =>
-          obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-          obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
-      );
+    const data = this.mapDataPropsToState.filter(
+      (obj) =>
+        obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+        obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
+    );
     this.setState({ data });
   };
+  mapDataPropsToState: DataTypeState[] = this.props.movie.all_movie.map((list, index) => ({
+    key: index + 1,
+    title: list.title,
+    view: list.views,
+    genre: list.genre,
+    desc: list.descriptions
+  }));
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Movie);
