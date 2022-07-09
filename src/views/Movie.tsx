@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchMovies } from '../store/movie/movie-actions';
-import { Space, Table, Button, Row, Col, Modal, Typography } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Space, Table, Button, Row, Col, Modal, Typography, Input } from 'antd';
+import { InfoCircleOutlined, EditOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/lib/table';
 import { MoviesModel } from '../models/redux-models';
 
@@ -32,10 +32,12 @@ const mapDispatchToProps = {
 type IProps = IRootState & DispatchProps;
 
 type IState = {
-  input: string;
   data: DataTypeState[];
   isModalVisible: boolean;
   selectIndex: number | null;
+  isFilterVisible: boolean;
+  searchTitle: string;
+  searchGenre: string;
 };
 class Movie extends Component<IProps, IState> {
   columns: ColumnsType<DataTypeState> = [
@@ -83,7 +85,7 @@ class Movie extends Component<IProps, IState> {
       width: 100,
       render: () => (
         <Space size="middle">
-          <a href="/#">Edit</a>
+          <EditOutlined />
         </Space>
       )
     }
@@ -91,19 +93,57 @@ class Movie extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = { input: '', data: [], isModalVisible: false, selectIndex: null };
+    this.state = {
+      data: [],
+      isModalVisible: false,
+      selectIndex: null,
+      isFilterVisible: false,
+      searchTitle: '',
+      searchGenre: ''
+    };
   }
   componentDidMount() {
     this.getData();
   }
   render() {
+    const summary = this.state.isFilterVisible
+      ? () => (
+          <Table.Summary fixed={'top'}>
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={1} colSpan={1} />
+              <Table.Summary.Cell index={2} colSpan={1}>
+                <Input
+                  name="searchTitle"
+                  value={this.state.searchTitle}
+                  onChange={this.handleChange}
+                  placeholder="Search Title"
+                />
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={3} colSpan={1} />
+              <Table.Summary.Cell index={4} colSpan={1}>
+                <Input
+                  name="searchGenre"
+                  value={this.state.searchGenre}
+                  onChange={this.handleChange}
+                  placeholder="Search Genre"
+                />
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          </Table.Summary>
+        )
+      : () => <></>;
     return (
       <>
-        <Button type="primary" onClick={() => this.getData()}>
+        <Button type="primary" onClick={() => this.handleFilter(!this.state.isFilterVisible)}>
           Filter
         </Button>
         <Row>
-          <Table columns={this.columns} dataSource={this.state.data} scroll={{ y: 440 }} />
+          <Table
+            columns={this.columns}
+            dataSource={this.state.data}
+            scroll={{ y: 380 }}
+            summary={summary}
+          />
         </Row>
         <Modal
           title="Description"
@@ -128,14 +168,43 @@ class Movie extends Component<IProps, IState> {
       }))
     });
   };
-  handleSearch = (search: string) => {
-    console.log(this.state.isModalVisible);
-  };
   showModal = (index: number) => {
     this.setState({ isModalVisible: true, selectIndex: index - 1 });
   };
   handleCancel = () => {
     this.setState({ isModalVisible: false, selectIndex: null });
+  };
+  handleFilter = (isFilterVisible: boolean) => {
+    this.setState({ isFilterVisible });
+  };
+  handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    let searchTitle = this.state.searchTitle;
+    let searchGenre = this.state.searchGenre;
+    if (e.currentTarget.name === 'searchTitle') {
+      this.setState({ searchTitle: e.currentTarget.value });
+      searchTitle = e.currentTarget.value;
+    }
+    if (e.currentTarget.name === 'searchGenre') {
+      this.setState({ searchGenre: e.currentTarget.value });
+      searchGenre = e.currentTarget.value;
+    }
+    this.handleSearch(searchTitle, searchGenre);
+  };
+  handleSearch = (searchTitle: string, searchGenre: string) => {
+    const data = this.props.movie.all_movie
+      .map((list, index) => ({
+        key: index + 1,
+        title: list.title,
+        view: list.views,
+        genre: list.genre,
+        desc: list.descriptions
+      }))
+      .filter(
+        (obj) =>
+          obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+          obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
+      );
+    this.setState({ data });
   };
 }
 

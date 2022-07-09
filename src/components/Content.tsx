@@ -11,7 +11,7 @@ const ContentComponent: FC = () => {
       style={{
         margin: '24px 16px',
         padding: 24,
-        minHeight: '70vh'
+        minHeight: '76vh'
       }}
     >
       <Routes>
