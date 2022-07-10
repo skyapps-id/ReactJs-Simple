@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchMovies } from '../store/movie/movie-actions';
-import { Space, Table, Button, Row, Col, Modal, Typography, Input } from 'antd';
-import { InfoCircleOutlined, EditOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/lib/table';
+import { Button, Row, Col, Modal, Typography, Input, Table } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { MoviesModel } from '../models/redux-models';
+import BuildTable from '../components/Table';
 
 const { Text } = Typography;
 
+interface Columns {
+  title: string;
+  key: string;
+  dataIndex?: string;
+  editable?: boolean;
+  width?: number;
+  render?: any;
+}
 interface DataTypeState {
   key: number;
   title: string;
-  view: number;
+  views: number;
   genre: string;
   descriptions: string;
 }
@@ -41,36 +49,40 @@ type IState = {
   searchGenre: string;
 };
 class Movie extends Component<IProps, IState> {
-  columns: ColumnsType<DataTypeState> = [
+  columns: Columns[] = [
     {
       title: 'No',
       dataIndex: 'key',
       key: 'no',
       width: 60,
-      render: (_, record: DataTypeState) => <>{record.key + 1}</>
+      render: (_: any, record: DataTypeState) => <>{record.key + 1}</>
     },
     {
       title: 'Title',
       dataIndex: 'title',
-      key: 'title'
+      key: 'title',
+      editable: true
     },
     {
-      title: 'View',
-      dataIndex: 'view',
-      key: 'view',
-      width: 120
+      title: 'views',
+      dataIndex: 'views',
+      key: 'views',
+      width: 120,
+      editable: true
     },
     {
       title: 'Genre',
       dataIndex: 'genre',
       key: 'genre',
-      width: 150
+      width: 150,
+      editable: true
     },
     {
       title: 'Description',
       dataIndex: 'descriptions',
       key: 'descriptions',
-      render: (_, record: DataTypeState) => (
+      editable: true,
+      render: (_: any, record: DataTypeState) => (
         <Row>
           <Col span={23}>
             <Text ellipsis>{record.descriptions}</Text>
@@ -79,16 +91,6 @@ class Movie extends Component<IProps, IState> {
             <InfoCircleOutlined onClick={() => this.showModal(record.key)} />
           </Col>
         </Row>
-      )
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      width: 100,
-      render: () => (
-        <Space size="middle">
-          <EditOutlined />
-        </Space>
       )
     }
   ];
@@ -140,11 +142,15 @@ class Movie extends Component<IProps, IState> {
           Filter
         </Button>
         <Row>
-          <Table
-            bordered
+          <BuildTable
             columns={this.columns}
-            dataSource={this.state.data}
-            scroll={{ y: 380 }}
+            data={this.state.data.map((data) => ({
+              key: data.key.toString(),
+              title: data.title,
+              views: data.views,
+              genre: data.genre,
+              descriptions: data.descriptions
+            }))}
             summary={summary}
           />
         </Row>
