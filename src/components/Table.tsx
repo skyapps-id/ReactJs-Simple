@@ -14,7 +14,7 @@ interface Columns {
   title: string;
   key: string;
   dataIndex?: string;
-  width?: number;
+  width?: number | string;
   editable?: boolean;
   render?: any;
 }
@@ -211,7 +211,7 @@ const TableComponent: React.FC<IProps> = (props) => {
         dataSource={props.isFilterVisible && dataFilter.length ? dataFilter : props.data}
         columns={mergedColumns}
         rowClassName="editable-row"
-        scroll={{ y: 380 }}
+        scroll={{y:320}}
         pagination={{
           onChange: cancel
         }}

@@ -13,7 +13,7 @@ interface Columns {
   key: string;
   dataIndex?: string;
   editable?: boolean;
-  width?: number;
+  width?: number | string;
   render?: any;
 }
 interface DataTypeState {
@@ -110,12 +110,11 @@ class Movie extends Component<IProps, IState> {
   render() {
     return (
       <>
-        <Button type="primary" onClick={() => this.handleFilter(!this.state.isFilterVisible)}>
-          Filter
-        </Button>
-        <Button type="primary" onClick={() => this.getData()}>
-          Filter
-        </Button>
+        <Row>
+          <Button type="primary" onClick={() => this.handleFilter(!this.state.isFilterVisible)}>
+            Filter
+          </Button>
+        </Row>
         <Row>
           <BuildTable
             columns={this.columns}
