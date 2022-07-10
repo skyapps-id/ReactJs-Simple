@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchMovies } from '../store/movie/movie-actions';
-import { Button, Row, Col, Modal, Typography, Input, Table } from 'antd';
+import { Button, Row, Col, Modal, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { MoviesModel } from '../models/redux-models';
 import BuildTable from '../components/Table';
@@ -45,8 +45,6 @@ type IState = {
   isModalVisible: boolean;
   selectIndex: number | null;
   isFilterVisible: boolean;
-  searchTitle: string;
-  searchGenre: string;
 };
 class Movie extends Component<IProps, IState> {
   columns: Columns[] = [
@@ -101,41 +99,13 @@ class Movie extends Component<IProps, IState> {
       data: [],
       isModalVisible: false,
       selectIndex: null,
-      isFilterVisible: false,
-      searchTitle: '',
-      searchGenre: ''
+      isFilterVisible: false
     };
   }
   componentDidMount() {
     this.getData();
   }
   render() {
-    const summary = this.state.isFilterVisible
-      ? () => (
-          <Table.Summary fixed={'top'}>
-            <Table.Summary.Row>
-              <Table.Summary.Cell index={1} colSpan={1} />
-              <Table.Summary.Cell index={2} colSpan={1}>
-                <Input
-                  name="searchTitle"
-                  value={this.state.searchTitle}
-                  onChange={this.handleChange}
-                  placeholder="Search Title"
-                />
-              </Table.Summary.Cell>
-              <Table.Summary.Cell index={3} colSpan={1} />
-              <Table.Summary.Cell index={4} colSpan={1}>
-                <Input
-                  name="searchGenre"
-                  value={this.state.searchGenre}
-                  onChange={this.handleChange}
-                  placeholder="Search Genre"
-                />
-              </Table.Summary.Cell>
-            </Table.Summary.Row>
-          </Table.Summary>
-        )
-      : () => <></>;
     return (
       <>
         <Button type="primary" onClick={() => this.handleFilter(!this.state.isFilterVisible)}>
@@ -151,7 +121,7 @@ class Movie extends Component<IProps, IState> {
               genre: data.genre,
               descriptions: data.descriptions
             }))}
-            summary={summary}
+            isFilterVisible={this.state.isFilterVisible}
           />
         </Row>
         <Modal
@@ -185,31 +155,7 @@ class Movie extends Component<IProps, IState> {
       this.setState({
         data: this.props.movie.all_movie.map((data, index) => ({ key: index, ...data }))
       });
-      this.setState({ searchTitle: '', searchGenre: '' });
     }
-  };
-  handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    let searchTitle = this.state.searchTitle;
-    let searchGenre = this.state.searchGenre;
-    if (e.currentTarget.name === 'searchTitle') {
-      this.setState({ searchTitle: e.currentTarget.value });
-      searchTitle = e.currentTarget.value;
-    }
-    if (e.currentTarget.name === 'searchGenre') {
-      this.setState({ searchGenre: e.currentTarget.value });
-      searchGenre = e.currentTarget.value;
-    }
-    this.handleSearch(searchTitle, searchGenre);
-  };
-  handleSearch = (searchTitle: string, searchGenre: string) => {
-    const data = this.props.movie.all_movie
-      .map((data, index) => ({ key: index, ...data }))
-      .filter(
-        (obj) =>
-          obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-          obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
-      );
-    this.setState({ data });
   };
 }
 

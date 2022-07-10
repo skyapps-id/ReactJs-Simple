@@ -22,7 +22,7 @@ interface Columns {
 interface IProps {
   columns: Columns[];
   data: Item[];
-  summary: any;
+  isFilterVisible: boolean;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -67,9 +67,14 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
+const initFilter: Item[] = [];
+
 const TableComponent: React.FC<IProps> = (props) => {
   const [form] = Form.useForm();
+  const [dataFilter, setDataFilter] = useState(initFilter);
   const [editingKey, setEditingKey] = useState('');
+  const [searchTitle, setSearchTitle] = useState('');
+  const [searchGenre, setSearchGenre] = useState('');
 
   const isEditing = (record: Item) => record.key === editingKey;
 
@@ -84,9 +89,10 @@ const TableComponent: React.FC<IProps> = (props) => {
 
   const save = async (key: React.Key) => {
     try {
-      const newData = [...props.data];
+      const data = props.isFilterVisible && dataFilter.length ? dataFilter : props.data;
+      const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
-      console.log(newData[index])
+      console.log(newData[index]);
       if (index > -1) {
         // Implement Dispatch Update and Reload Data
         setEditingKey('');
@@ -97,6 +103,56 @@ const TableComponent: React.FC<IProps> = (props) => {
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
+  };
+
+  const summary = props.isFilterVisible
+    ? () => (
+        <Table.Summary fixed={'top'}>
+          <Table.Summary.Row>
+            <Table.Summary.Cell index={1} colSpan={1} />
+            <Table.Summary.Cell index={2} colSpan={1}>
+              <Input
+                name="searchTitle"
+                value={searchTitle}
+                onChange={handleChange}
+                placeholder="Search Title"
+              />
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={3} colSpan={1} />
+            <Table.Summary.Cell index={4} colSpan={1}>
+              <Input
+                name="searchGenre"
+                value={searchGenre}
+                onChange={handleChange}
+                placeholder="Search Genre"
+              />
+            </Table.Summary.Cell>
+          </Table.Summary.Row>
+        </Table.Summary>
+      )
+    : () => <></>;
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    let title = searchTitle;
+    let genre = searchGenre;
+    if (e.currentTarget.name === 'searchTitle') {
+      title = e.currentTarget.value;
+      setSearchTitle(e.currentTarget.value);
+    }
+    if (e.currentTarget.name === 'searchGenre') {
+      genre = e.currentTarget.value;
+      setSearchGenre(e.currentTarget.value);
+    }
+    handleSearch(title, genre);
+  };
+
+  const handleSearch = (searchTitle: string, searchGenre: string) => {
+    setDataFilter(
+      props.data.filter(
+        (obj) =>
+          obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+          obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
+      )
+    );
   };
 
   const columns: Columns[] = [
@@ -140,6 +196,7 @@ const TableComponent: React.FC<IProps> = (props) => {
       })
     };
   });
+
   return (
     <Form form={form} component={false}>
       <Table
@@ -148,15 +205,14 @@ const TableComponent: React.FC<IProps> = (props) => {
             cell: EditableCell
           }
         }}
-        bordered
-        dataSource={props.data}
+        dataSource={props.isFilterVisible && dataFilter.length ? dataFilter : props.data}
         columns={mergedColumns}
         rowClassName="editable-row"
         scroll={{ y: 380 }}
         pagination={{
           onChange: cancel
         }}
-        summary={props.summary}
+        summary={summary}
       />
     </Form>
   );
