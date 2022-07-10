@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchMovies } from '../store/movie/movie-actions';
+import { fetchMovies, updateMovie } from '../store/movie/movie-actions';
 import { Button, Row, Col, Modal, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { MoviesModel } from '../models/redux-models';
+import { MovieModel, MoviesModel } from '../models/redux-models';
 import BuildTable from '../components/Table';
 
 const { Text } = Typography;
@@ -30,12 +30,14 @@ interface IRootState {
 
 interface DispatchProps {
   fetchMovies: () => void;
+  updateMovie: (id: string, payload: MovieModel) => void;
 }
 
 const mapStateToProps = (state: IRootState) => state;
 
 const mapDispatchToProps = {
-  fetchMovies
+  fetchMovies,
+  updateMovie
 };
 
 type IProps = IRootState & DispatchProps;
@@ -111,6 +113,9 @@ class Movie extends Component<IProps, IState> {
         <Button type="primary" onClick={() => this.handleFilter(!this.state.isFilterVisible)}>
           Filter
         </Button>
+        <Button type="primary" onClick={() => this.getData()}>
+          Filter
+        </Button>
         <Row>
           <BuildTable
             columns={this.columns}
@@ -122,6 +127,7 @@ class Movie extends Component<IProps, IState> {
               descriptions: data.descriptions
             }))}
             isFilterVisible={this.state.isFilterVisible}
+            updateData={this.updateData}
           />
         </Row>
         <Modal
@@ -142,6 +148,16 @@ class Movie extends Component<IProps, IState> {
     this.setState({
       data: this.props.movie.all_movie.map((data, index) => ({ key: index, ...data }))
     });
+  };
+  updateData = async (id: string, data: MovieModel) => {
+    await this.props.updateMovie(id, {
+      title: data.title,
+      views: data.views,
+      genre: data.genre,
+      descriptions: data.descriptions
+    });
+    await this.getData();
+    this.setState({ isFilterVisible: false });
   };
   showModal = (index: number) => {
     this.setState({ isModalVisible: true, selectIndex: index });

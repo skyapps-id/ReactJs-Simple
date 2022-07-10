@@ -23,6 +23,7 @@ interface IProps {
   columns: Columns[];
   data: Item[];
   isFilterVisible: boolean;
+  updateData?: (id: string, payload: any) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -68,7 +69,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 const initFilter: Item[] = [];
-
 const TableComponent: React.FC<IProps> = (props) => {
   const [form] = Form.useForm();
   const [dataFilter, setDataFilter] = useState(initFilter);
@@ -89,12 +89,15 @@ const TableComponent: React.FC<IProps> = (props) => {
 
   const save = async (key: React.Key) => {
     try {
+      const row = await form.validateFields();
       const data = props.isFilterVisible && dataFilter.length ? dataFilter : props.data;
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
-      console.log(newData[index]);
-      if (index > -1) {
+      if (index > -1 && newData[index]) {
         // Implement Dispatch Update and Reload Data
+        if (props.updateData) {
+          props.updateData(String(index), row);
+        }
         setEditingKey('');
       } else {
         // Implement Dispatch eload Data
