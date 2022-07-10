@@ -1,7 +1,7 @@
 export interface MovieModel {
-  genre: string;
   title: string;
-  views: number;
+  view: number;
+  genre: string;
   descriptions: string;
 }
 

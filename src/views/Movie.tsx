@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchMovies } from '../store/movie/movie-actions';
 import { Space, Table, Button, Row, Col, Modal, Typography, Input } from 'antd';
@@ -7,12 +7,13 @@ import type { ColumnsType } from 'antd/lib/table';
 import { MoviesModel } from '../models/redux-models';
 
 const { Text } = Typography;
+
 interface DataTypeState {
   key: number;
   title: string;
   view: number;
-  desc: string;
   genre: string;
+  descriptions: string;
 }
 
 interface IRootState {
@@ -45,7 +46,8 @@ class Movie extends Component<IProps, IState> {
       title: 'No',
       dataIndex: 'key',
       key: 'no',
-      width: 60
+      width: 60,
+      render: (_, record: DataTypeState) => <>{record.key + 1}</>
     },
     {
       title: 'Title',
@@ -56,7 +58,7 @@ class Movie extends Component<IProps, IState> {
       title: 'View',
       dataIndex: 'view',
       key: 'view',
-      width: 100
+      width: 120
     },
     {
       title: 'Genre',
@@ -66,15 +68,15 @@ class Movie extends Component<IProps, IState> {
     },
     {
       title: 'Description',
-      dataIndex: 'desc',
-      key: 'desc',
-      render: (_, { key, desc }) => (
+      dataIndex: 'descriptions',
+      key: 'descriptions',
+      render: (_, record: DataTypeState) => (
         <Row>
           <Col span={23}>
-            <Text ellipsis>{desc}</Text>
+            <Text ellipsis>{record.descriptions}</Text>
           </Col>
           <Col span={1}>
-            <InfoCircleOutlined onClick={() => this.showModal(key)} />
+            <InfoCircleOutlined onClick={() => this.showModal(record.key)} />
           </Col>
         </Row>
       )
@@ -139,6 +141,7 @@ class Movie extends Component<IProps, IState> {
         </Button>
         <Row>
           <Table
+            bordered
             columns={this.columns}
             dataSource={this.state.data}
             scroll={{ y: 380 }}
@@ -151,7 +154,9 @@ class Movie extends Component<IProps, IState> {
           onCancel={this.handleCancel}
           footer={null}
         >
-          {this.state.selectIndex !== null && <p>{this.state.data[this.state.selectIndex].desc}</p>}
+          {this.state.selectIndex !== null && (
+            <p>{this.state.data[this.state.selectIndex].descriptions}</p>
+          )}
         </Modal>
       </>
     );
@@ -159,11 +164,11 @@ class Movie extends Component<IProps, IState> {
   getData = async () => {
     await this.props.fetchMovies();
     this.setState({
-      data: this.mapDataPropsToState
+      data: this.props.movie.all_movie.map((data, index) => ({ key: index, ...data }))
     });
   };
   showModal = (index: number) => {
-    this.setState({ isModalVisible: true, selectIndex: index - 1 });
+    this.setState({ isModalVisible: true, selectIndex: index });
   };
   handleCancel = () => {
     this.setState({ isModalVisible: false, selectIndex: null });
@@ -172,7 +177,7 @@ class Movie extends Component<IProps, IState> {
     this.setState({ isFilterVisible });
     if (!isFilterVisible) {
       this.setState({
-        data: this.mapDataPropsToState
+        data: this.props.movie.all_movie.map((data, index) => ({ key: index, ...data }))
       });
       this.setState({ searchTitle: '', searchGenre: '' });
     }
@@ -191,20 +196,15 @@ class Movie extends Component<IProps, IState> {
     this.handleSearch(searchTitle, searchGenre);
   };
   handleSearch = (searchTitle: string, searchGenre: string) => {
-    const data = this.mapDataPropsToState.filter(
-      (obj) =>
-        obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-        obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
-    );
+    const data = this.props.movie.all_movie
+      .map((data, index) => ({ key: index, ...data }))
+      .filter(
+        (obj) =>
+          obj.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+          obj.genre.toLowerCase().includes(searchGenre.toLowerCase())
+      );
     this.setState({ data });
   };
-  mapDataPropsToState: DataTypeState[] = this.props.movie.all_movie.map((list, index) => ({
-    key: index + 1,
-    title: list.title,
-    view: list.views,
-    genre: list.genre,
-    desc: list.descriptions
-  }));
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Movie);
