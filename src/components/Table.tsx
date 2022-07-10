@@ -25,13 +25,6 @@ interface IProps {
   summary: any;
 }
 
-/* interface Item {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-} */
-
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
@@ -75,9 +68,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 const TableComponent: React.FC<IProps> = (props) => {
-  const originData: Item[] = [];
   const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record: Item) => record.key === editingKey;
@@ -93,21 +84,14 @@ const TableComponent: React.FC<IProps> = (props) => {
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await form.validateFields()) as Item;
-
-      const newData = [...data];
+      const newData = [...props.data];
       const index = newData.findIndex((item) => key === item.key);
+      console.log(newData[index])
       if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row
-        });
-        setData(newData);
+        // Implement Dispatch Update and Reload Data
         setEditingKey('');
       } else {
-        newData.push(row);
-        setData(newData);
+        // Implement Dispatch eload Data
         setEditingKey('');
       }
     } catch (errInfo) {

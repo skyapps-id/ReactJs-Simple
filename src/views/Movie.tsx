@@ -55,7 +55,7 @@ class Movie extends Component<IProps, IState> {
       dataIndex: 'key',
       key: 'no',
       width: 60,
-      render: (_: any, record: DataTypeState) => <>{record.key + 1}</>
+      render: (_: any, record: DataTypeState) => <>{Number(record.key) + 1}</>
     },
     {
       title: 'Title',
