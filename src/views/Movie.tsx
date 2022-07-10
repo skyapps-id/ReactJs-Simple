@@ -11,7 +11,7 @@ const { Text } = Typography;
 interface DataTypeState {
   key: number;
   title: string;
-  view: number;
+  views: number;
   genre: string;
   descriptions: string;
 }
@@ -55,9 +55,9 @@ class Movie extends Component<IProps, IState> {
       key: 'title'
     },
     {
-      title: 'View',
-      dataIndex: 'view',
-      key: 'view',
+      title: 'Views',
+      dataIndex: 'views',
+      key: 'views',
       width: 120
     },
     {
