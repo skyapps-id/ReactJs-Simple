@@ -64,7 +64,7 @@ class Movie extends Component<IProps, IState> {
       editable: true
     },
     {
-      title: 'views',
+      title: 'Views',
       dataIndex: 'views',
       key: 'views',
       width: 120,
