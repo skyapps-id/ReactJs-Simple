@@ -13,3 +13,12 @@ export const fetchMovies = (): ThunkAction<void, RootState, unknown, AnyAction> 
     dispatch(movieActions.setMovies(response));
   };
 };
+
+export const updateMovie = (
+  id: string,
+  payload: MovieModel
+): ThunkAction<void, RootState, unknown, AnyAction> => {
+  return async () => {
+    await MovieService.update(id, payload);
+  };
+};
