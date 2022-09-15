@@ -14,6 +14,7 @@ interface Columns {
   dataIndex?: string;
   editable?: boolean;
   width?: number | string;
+  // eslint-disable-next-line
   render?: any;
 }
 interface DataTypeState {
@@ -55,6 +56,7 @@ class Movie extends Component<IProps, IState> {
       dataIndex: 'key',
       key: 'no',
       width: 60,
+      // eslint-disable-next-line
       render: (_: any, record: DataTypeState) => <>{Number(record.key) + 1}</>
     },
     {
@@ -82,6 +84,7 @@ class Movie extends Component<IProps, IState> {
       dataIndex: 'descriptions',
       key: 'descriptions',
       editable: true,
+      // eslint-disable-next-line
       render: (_: any, record: DataTypeState) => (
         <Row>
           <Col span={23}>

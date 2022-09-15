@@ -16,6 +16,7 @@ interface Columns {
   dataIndex?: string;
   width?: number | string;
   editable?: boolean;
+  // eslint-disable-next-line
   render?: any;
 }
 
@@ -23,12 +24,14 @@ interface IProps {
   columns: Columns[];
   data: Item[];
   isFilterVisible: boolean;
+  // eslint-disable-next-line
   updateData?: (id: string, payload: any) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
+  // eslint-disable-next-line
   title: any;
   inputType: 'number' | 'text';
   record: Item;
@@ -104,6 +107,7 @@ const TableComponent: React.FC<IProps> = (props) => {
         setEditingKey('');
       }
     } catch (errInfo) {
+      // eslint-disable-next-line
       console.log('Validate Failed:', errInfo);
     }
   };
@@ -164,6 +168,7 @@ const TableComponent: React.FC<IProps> = (props) => {
       key: 'action',
       dataIndex: 'operation',
       width: 80,
+      // eslint-disable-next-line
       render: (_: any, record: Item) => {
         const editable = isEditing(record);
         return editable ? (
@@ -211,7 +216,7 @@ const TableComponent: React.FC<IProps> = (props) => {
         dataSource={props.isFilterVisible && dataFilter.length ? dataFilter : props.data}
         columns={mergedColumns}
         rowClassName="editable-row"
-        scroll={{y:320}}
+        scroll={{ y: 320 }}
         pagination={{
           onChange: cancel
         }}
