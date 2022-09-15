@@ -68,7 +68,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run format:write",
+      "pre-commit": "npm run format:check",
       "pre-push": "ng build --aot true"
     }
   }
