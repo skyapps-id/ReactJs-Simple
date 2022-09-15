@@ -21,7 +21,7 @@
 
 ### Demo URL
 
-http://skyapps-id.github.io/reactjs-simple-editable
+https://skyapps-id.github.io/ReactJs-Simple/
 
 ### Contact
 
