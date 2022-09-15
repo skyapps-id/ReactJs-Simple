@@ -1,4 +1,5 @@
 {
+  "homepage": "http://skyapps-id.github.io/reactjs-simple-editable",
   "name": "reactjs-simple",
   "version": "0.1.0",
   "private": true,
@@ -31,7 +32,9 @@
     "lint:fix": "eslint --fix",
     "format:write": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "format:check": "prettier --check './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
-    "prepare": "husky install client/.husky"
+    "prepare": "husky install client/.husky",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +61,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
+    "gh-pages": "^4.0.0",
     "husky": "^8.0.1",
     "prettier": "^2.7.1"
   },
